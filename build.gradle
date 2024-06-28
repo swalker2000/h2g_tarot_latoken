@@ -1,0 +1,54 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'application'
+    id 'java'
+    //id 'kotlinx-serialization'
+}
+
+group = 'com.h2g'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+task FatJar(type: Jar) {
+    project.configurations.getByName("implementation").setCanBeResolved(true)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Implementation-Title': 'H2gQuestionnaireTarotFat'
+        attributes 'Main-Class': 'com.MainKt'
+        archiveBaseName = 'H2gQuestionnaireTarotFat'
+    }
+    from { configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.35'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.35'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "dev.inmo:tgbotapi:10.0.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'com.h2g:common:+'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '17'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '17'
+}
+
+application {
+    mainClassName = 'MainKt'
+}
